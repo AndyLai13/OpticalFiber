@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".InspectorActivity">
+
+	<Button
+		android:id="@+id/take_photo"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="take"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent">
+	</Button>
+
+	<SurfaceView
+		android:id="@+id/surfaceView"
+		android:layout_width="0dp"
+		app:layout_constraintHorizontal_weight="1"
+		android:layout_height="match_parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent">
+	</SurfaceView>
+
+	<ImageView
+		android:id="@+id/logo"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_logo_lightel"
+		android:background="@color/colorPrimary"
+		android:padding="5dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+	</ImageView>
+
+	<LinearLayout
+		android:id="@+id/function_group"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:background="#494646"
+		app:layout_constraintTop_toBottomOf="@id/logo"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="@id/logo"
+		app:layout_constraintBottom_toBottomOf="parent"
+		android:orientation="vertical">
+
+		<Button
+			android:id="@+id/function1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="func1"/>
+
+		<Button
+			android:id="@+id/function2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="func2"/>
+
+		<Button
+			android:id="@+id/function3"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="func3"/>
+
+		<Button
+			android:id="@+id/function4"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:text="func4"/>
+	</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
