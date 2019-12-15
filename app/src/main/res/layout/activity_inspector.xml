@@ -6,74 +6,150 @@
 	android:layout_height="match_parent"
 	tools:context=".InspectorActivity">
 
-	<Button
-		android:id="@+id/take_photo"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="take"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent">
-	</Button>
-
-	<SurfaceView
-		android:id="@+id/surfaceView"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/texture_container"
 		android:layout_width="0dp"
-		app:layout_constraintHorizontal_weight="1"
 		android:layout_height="match_parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent">
-	</SurfaceView>
+		app:layout_constraintHorizontal_weight="4"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/function_container">
 
-	<ImageView
-		android:id="@+id/logo"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/ic_logo_lightel"
-		android:background="@color/colorPrimary"
-		android:padding="5dp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
-	</ImageView>
+		<Button
+			android:id="@+id/take_photo"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="take"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"/>
 
-	<LinearLayout
-		android:id="@+id/function_group"
+		<com.lightel.opticalfiber.AutoFitTextureView
+			android:id="@+id/surfaceView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/function_container"
 		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:background="#494646"
-		app:layout_constraintTop_toBottomOf="@id/logo"
+		android:layout_height="match_parent"
+		app:layout_constraintHorizontal_weight="1"
+		app:layout_constraintStart_toEndOf="@id/texture_container"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="@id/logo"
-		app:layout_constraintBottom_toBottomOf="parent"
 		android:orientation="vertical">
 
-		<Button
-			android:id="@+id/function1"
-			android:layout_width="wrap_content"
+		<RadioGroup
+			android:id="@+id/fiber_type"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:text="func1"/>
+			android:orientation="vertical"
+			app:layout_constraintTop_toTopOf="parent">
 
-		<Button
-			android:id="@+id/function2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:text="func2"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="16dp"
+				android:text="Fiber Type"/>
 
-		<Button
-			android:id="@+id/function3"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:text="func3"/>
+			<RadioButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="SM"/>
 
-		<Button
-			android:id="@+id/function4"
+			<RadioButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="MM"/>
+
+			<RadioButton
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="MPO"/>
+		</RadioGroup>
+
+		<LinearLayout
+			android:id="@+id/button_group"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			app:layout_constraintTop_toBottomOf="@id/fiber_type">
+			<Button
+				android:id="@+id/options"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Options"/>
+
+			<Button
+				android:id="@+id/image_explore"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Image\nExplore"/>
+
+			<Button
+				android:id="@+id/notes"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:visibility="gone"
+				android:text="Notes"/>
+
+			<Button
+				android:id="@+id/save"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Save"/>
+		</LinearLayout>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/analyze_container"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintTop_toBottomOf="@id/button_group">
+			<Button
+				android:id="@+id/analyze"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Analyze"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toStartOf="@+id/auto_save"/>
+
+			<CheckBox
+				android:id="@+id/auto_save"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:layout_constraintTop_toTopOf="@id/analyze"
+				app:layout_constraintBottom_toBottomOf="@id/analyze"
+				app:layout_constraintStart_toEndOf="@id/analyze"
+				app:layout_constraintEnd_toEndOf="parent"
+				android:lines="2"
+				android:text="Auto\nSave"/>
+
+			<RadioGroup
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				app:layout_constraintTop_toBottomOf="@id/analyze"
+				app:layout_constraintStart_toStartOf="parent">
+				<RadioButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="USB"/>
+				<RadioButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="WIFI"/>
+			</RadioGroup>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<ImageView
+			android:id="@+id/logo"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:text="func4"/>
-	</LinearLayout>
+			android:src="@drawable/ic_logo_lightel_4"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
