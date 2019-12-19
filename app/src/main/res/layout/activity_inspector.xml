@@ -76,29 +76,34 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			app:layout_constraintTop_toBottomOf="@id/fiber_type">
+
 			<Button
 				android:id="@+id/options"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="70dp"
+				android:layout_height="30dp"
+				android:textSize="8sp"
 				android:text="Options"/>
 
 			<Button
 				android:id="@+id/image_explore"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="70dp"
+				android:layout_height="30dp"
+				android:textSize="8sp"
 				android:text="Image\nExplore"/>
 
 			<Button
 				android:id="@+id/notes"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="70dp"
+				android:layout_height="30dp"
+				android:textSize="8sp"
 				android:visibility="gone"
 				android:text="Notes"/>
 
 			<Button
 				android:id="@+id/save"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="70dp"
+				android:layout_height="30dp"
+				android:textSize="8sp"
 				android:text="Save"/>
 		</LinearLayout>
 
@@ -109,9 +114,11 @@
 			app:layout_constraintTop_toBottomOf="@id/button_group">
 			<Button
 				android:id="@+id/analyze"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="70dp"
+				android:layout_height="30dp"
 				android:text="Analyze"
+				android:textSize="8sp"
+
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintEnd_toStartOf="@+id/auto_save"/>
@@ -143,6 +150,14 @@
 					android:text="WIFI"/>
 			</RadioGroup>
 		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Brightness"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/brightness"/>
+
 		<SeekBar
 			android:id="@+id/brightness"
 			android:layout_width="match_parent"

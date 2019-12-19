@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -32,6 +33,7 @@ import android.util.Range;
 import android.util.Rational;
 import android.util.Size;
 import android.util.SparseIntArray;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -57,7 +59,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class InspectorActivity extends AppCompatActivity implements
-        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener {
+        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, View.OnTouchListener {
 
     private final static String TAG = InspectorActivity.class.getSimpleName();
     //    SurfaceView mSurfaceView;
@@ -142,6 +144,67 @@ public class InspectorActivity extends AppCompatActivity implements
         }
     }
 
+    public float finger_spacing = 0;
+    public int zoom_level = 1;
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        try {
+            CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCameraId);
+            float maxzoom = (characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM))*10;
+
+            Rect m = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+            int action = event.getAction();
+            float current_finger_spacing;
+
+            if (event.getPointerCount() > 1) {
+                // Multi touch logic
+                current_finger_spacing = getFingerSpacing(event);
+                if(finger_spacing != 0){
+                    if(current_finger_spacing > finger_spacing && maxzoom > zoom_level){
+                        zoom_level++;
+                    } else if (current_finger_spacing < finger_spacing && zoom_level > 1){
+                        zoom_level--;
+                    }
+                    int minW = (int) (m.width() / maxzoom);
+                    int minH = (int) (m.height() / maxzoom);
+                    int difW = m.width() - minW;
+                    int difH = m.height() - minH;
+                    int cropW = difW /100 *(int)zoom_level;
+                    int cropH = difH /100 *(int)zoom_level;
+                    cropW -= cropW & 3;
+                    cropH -= cropH & 3;
+                    Rect zoom = new Rect(cropW, cropH, m.width() - cropW, m.height() - cropH);
+                    mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, zoom);
+                }
+                finger_spacing = current_finger_spacing;
+            } else{
+                if (action == MotionEvent.ACTION_UP) {
+                    //single touch logic
+                }
+            }
+
+            try {
+                mCaptureSession
+                        .setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
+        } catch (CameraAccessException e) {
+            throw new RuntimeException("can not access camera.", e);
+        }
+        return true;
+    }
+
+    private static float getFingerSpacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
     /**
      * 启动一个HandlerThread
      */
@@ -206,6 +269,8 @@ public class InspectorActivity extends AppCompatActivity implements
                 takePicture();
             }
         });
+
+        mTextureView.setOnTouchListener(this);
 
         mBrightness = findViewById(R.id.brightness);
         mBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
