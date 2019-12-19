@@ -21,18 +21,22 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.hardware.camera2.params.TonemapCurve;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
+import android.util.Range;
+import android.util.Rational;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -72,6 +76,7 @@ public class InspectorActivity extends AppCompatActivity implements
     private File mFile;
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
+    CameraManager mCameraManager;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 1;
@@ -128,6 +133,9 @@ public class InspectorActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspector);
         initView();
+
+        mCameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 50);
@@ -198,9 +206,34 @@ public class InspectorActivity extends AppCompatActivity implements
                 takePicture();
             }
         });
+
+        mBrightness = findViewById(R.id.brightness);
+        mBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                try {
+                    updateCameraPreviewSession(progress);
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         findViewById(R.id.options).setOnClickListener(this);
         mFile = new File(getExternalFilesDir(null), "pic.jpg");
     }
+
+    SeekBar mBrightness;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -320,12 +353,11 @@ public class InspectorActivity extends AppCompatActivity implements
      * @param height 相机预览的可用尺寸的高度
      */
     private void setUpCameraOutputs(int width, int height) {
-        CameraManager manager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
         try {
             //获取可用摄像头列表
-            for (String cameraId : manager.getCameraIdList()) {
+            for (String cameraId : mCameraManager.getCameraIdList()) {
                 //获取相机的相关参数
-                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+                CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(cameraId);
                 // 不使用前置摄像头。
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
@@ -413,14 +445,22 @@ public class InspectorActivity extends AppCompatActivity implements
                 }
 
                 // 检查闪光灯是否支持。
-                Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-
+                Boolean flashAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+                Log.d("Andy", "flashAvailable = " + flashAvailable);
                 // always return 0 because camera has fixed focus
 //                int[] afAvailableModes = characteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
 //
 //                CameraMetadata.CONTROL_AF_MODE_OFF = 0;
 
-                mFlashSupported = available == null ? false : available;
+
+                Range<Integer> controlAECompensationRange = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE);
+                if (controlAECompensationRange != null) {
+                    minCompensationRange = controlAECompensationRange.getLower();
+                    maxCompensationRange = controlAECompensationRange.getUpper();
+                }
+
+
+                mFlashSupported = flashAvailable == null ? false : flashAvailable;
                 mCameraId = cameraId;
                 return;
             }
@@ -432,6 +472,17 @@ public class InspectorActivity extends AppCompatActivity implements
 //                    .show(this.getFragmentManager(), FRAGMENT_DIALOG);
         }
     }
+
+//    public int getBrightnessValue() {
+//        int absBrightnessRange = maxCompensationRange - minCompensationRange;
+//        int value = getValue(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION);
+//
+//        Integer brightness =
+//
+//        return 100* (value - minCompensationRange)/ absBrightnessRange;
+//    }
+
+    Integer minCompensationRange, maxCompensationRange;
 
     private static Size chooseOptimalSize(Size[] choices, int textureViewWidth,
                                           int textureViewHeight, int maxWidth, int maxHeight, Size aspectRatio) {
@@ -496,13 +547,12 @@ public class InspectorActivity extends AppCompatActivity implements
         setUpCameraOutputs(width, height);
         //配置变换
         configureTransform(width, height);
-        CameraManager manager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
         try {
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
             //打开相机预览
-            manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+            mCameraManager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -544,6 +594,8 @@ public class InspectorActivity extends AppCompatActivity implements
         }
     };
 
+    float[][] channels;
+
     @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     void createCameraPreviewSession() {
         try {
@@ -552,9 +604,7 @@ public class InspectorActivity extends AppCompatActivity implements
             if (texture != null) {
                 // 将默认缓冲区的大小配置为我们想要的相机预览的大小。 设置分辨率
                 texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
-                // 预览的输出Surface。
                 Surface surface = new Surface(texture);
-//            Surface surface = mSurfaceView.getHolder().getSurface();
                 mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                 mPreviewRequestBuilder.addTarget(surface);
 
@@ -569,9 +619,41 @@ public class InspectorActivity extends AppCompatActivity implements
                         try {
                             //auto focus
                             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                                    CaptureRequest.CONTROL_AF_MODE_OFF);
+
+                            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
+
+
+//                            CameraCharacteristics mCharacteristics = mCameraManager.getCameraCharacteristics(mCameraId);
+
+//                            Range<Integer> range1 = mCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE);
+//                            Rational step = mCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP);
+//
+//                            int minExposure = range1.getLower();
+//                            int maxExposure = range1.getUpper();
+//                            Log.d("Andy", "minExposure = " + minExposure );
+//                            Log.d("Andy", "maxExposure = " + maxExposure );
+//                            Log.d("Andy", "step = " + step.floatValue());
+//
+//                            if (minExposure != 0 || maxExposure != 0) {
+//
+//                                int i = 0;
+//                                int all = (-minExposure) + maxExposure;
+//                                int time = 100 / all;
+//                                int ae = ((i / time) - maxExposure) > maxExposure ? maxExposure : ((i / time) - maxExposure) < minExposure ? minExposure : ((i / time) - maxExposure);
+//
+//                                Log.d("Andy", "ae = " + ae);
+//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, ae);
+//                            }
+
+
+                            Log.d("Andy", "CONTROL_AE_EXPOSURE_COMPENSATION = " +
+                                    mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION));
+                            Log.d("Andy", "CONTROL_AE_LOCK = " +
+                                    mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_LOCK));
+
                             // flash light
-                            //setAutoFlash(mPreviewRequestBuilder);
+                            setAutoFlash(mPreviewRequestBuilder);
                             mPreviewRequest = mPreviewRequestBuilder.build();
                             mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
                         } catch (CameraAccessException e) {
@@ -593,6 +675,69 @@ public class InspectorActivity extends AppCompatActivity implements
         }
     }
 
+    //
+    private void updateCameraPreviewSession(int i) throws CameraAccessException {
+        Log.d("Andy", "CONTROL_AE_MODE = " +
+                mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_MODE));
+
+        Log.d("Andy", "CONTROL_AE_EXPOSURE_COMPENSATION = " +
+                mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION));
+
+        Log.d("Andy", "CONTROL_AE_LOCK = " +
+                mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_LOCK));
+
+
+        CameraCharacteristics mCharacteristics = mCameraManager.getCameraCharacteristics(mCameraId);
+
+        Range<Integer> range1 = mCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE);
+        Rational step = mCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP);
+
+        int minExposure = range1.getLower();
+        int maxExposure = range1.getUpper();
+        Log.d("Andy", "minExposure = " + minExposure);
+        Log.d("Andy", "maxExposure = " + maxExposure);
+        Log.d("Andy", "step = " + step.floatValue());
+
+        if (minExposure != 0 || maxExposure != 0) {
+
+            int all = (-minExposure) + maxExposure;
+            int time = 100 / all;
+            int ae = ((i / time) - maxExposure) > maxExposure ? maxExposure : ((i / time) - maxExposure) < minExposure ? minExposure : ((i / time) - maxExposure);
+
+            Log.d("Andy", "ae = " + ae);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, ae);
+        }
+
+        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
+
+    }
+
+    private Range<Integer> getRange() {
+        CameraCharacteristics chars = null;
+        try {
+            chars = mCameraManager.getCameraCharacteristics(mCameraId);
+            Range<Integer>[] ranges = chars.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
+            Range<Integer> result = null;
+            for (Range<Integer> range : ranges) {
+                int upper = range.getUpper();
+                // 10 - min range upper for my needs
+                if (upper >= 10) {
+                    if (result == null || upper < result.getUpper().intValue()) {
+                        result = range;
+                    }
+                }
+            }
+            if (result == null) {
+                result = ranges[0];
+            }
+            return result;
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     void takePicture() {
         lockFocus();
     }
@@ -608,6 +753,9 @@ public class InspectorActivity extends AppCompatActivity implements
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
             // 修改状态
             mState = STATE_WAITING_LOCK;
+//            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, -6);
+            Log.d("Andy", "CONTROL_AE_EXPOSURE_COMPENSATION = " +
+                    mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION));
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mBackgroundHandler);
         } catch (CameraAccessException e) {
@@ -637,6 +785,7 @@ public class InspectorActivity extends AppCompatActivity implements
     }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
+        Log.d("Andy", "setAutoFlash = "  + mFlashSupported);
         if (mFlashSupported) {
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
@@ -677,7 +826,7 @@ public class InspectorActivity extends AppCompatActivity implements
                         captureStillPicture();
                     } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                             CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState ||
-                            CaptureResult.CONTROL_AF_STATE_INACTIVE  == afState) {
+                            CaptureResult.CONTROL_AF_STATE_INACTIVE == afState) {
                         // CONTROL_AE_STATE can be null on some devices
                         Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                         captureStillPicture();
@@ -730,8 +879,13 @@ public class InspectorActivity extends AppCompatActivity implements
             captureBuilder.addTarget(mImageReader.getSurface());
 
             // 使用相同的AE和AF模式作为预览。
-            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
+            // Set brightness
+            int value = 110;
+            int brightness = (int) (minCompensationRange + (maxCompensationRange - minCompensationRange) * (value / 100f));
+            captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0);
+
+
             setAutoFlash(captureBuilder);
 
             // 方向

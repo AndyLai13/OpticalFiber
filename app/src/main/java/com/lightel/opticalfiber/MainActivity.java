@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mDI5000.setOnClickListener(this);
 		mUndefined.setOnClickListener(this);
 		mSettings.setOnClickListener(this);
+		mDI2000.performClick();
 	}
 
 	@Override

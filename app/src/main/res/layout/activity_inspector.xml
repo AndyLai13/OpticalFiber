@@ -143,7 +143,14 @@
 					android:text="WIFI"/>
 			</RadioGroup>
 		</androidx.constraintlayout.widget.ConstraintLayout>
-
+		<SeekBar
+			android:id="@+id/brightness"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:max="100"
+			android:min="0"
+			app:layout_constraintBottom_toTopOf="@id/logo">
+		</SeekBar>
 		<ImageView
 			android:id="@+id/logo"
 			android:layout_width="wrap_content"
