@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		switch (view.getId()) {
 			case R.id.di1000:
 			case R.id.di2000:
-				startActivity(new Intent(this, InspectorActivity.class));
+				startActivity(new Intent(this, UVCCameraActivity.class));
 				break;
 			case R.id.di3000:
 			case R.id.di5000:
