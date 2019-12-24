@@ -1,15 +1,19 @@
 package com.lightel.opticalfiber;
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -22,8 +26,10 @@ import com.serenegiant.usb.UVCCamera;
 import com.serenegiant.usbcameracommon.UVCCameraHandler;
 import com.serenegiant.utils.ViewAnimationHelper;
 import com.serenegiant.widget.CameraViewInterface;
+import com.serenegiant.widget.UVCCameraTextureView;
 
-public class UVCCameraActivity extends BaseActivity implements CameraDialog.CameraDialogParent {
+public class UVCCameraActivity extends BaseActivity implements CameraDialog.CameraDialogParent,
+        View.OnClickListener {
 
     private static final boolean DEBUG = true;    // TODO set false on release
     private static final String TAG = "MainActivity";
@@ -41,13 +47,13 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
      * if your camera does not support specific resolution and mode,
      * {@link UVCCamera#setPreviewSize(int, int, int)} throw exception
      */
-    private static final int PREVIEW_WIDTH = 640;
+    private static final int PREVIEW_WIDTH = 1280;
     /**
      * preview resolution(height)
      * if your camera does not support specific resolution and mode,
      * {@link UVCCamera#setPreviewSize(int, int, int)} throw exception
      */
-    private static final int PREVIEW_HEIGHT = 480;
+    private static final int PREVIEW_HEIGHT = 960;
     /**
      * preview mode
      * if your camera does not support specific resolution and mode,
@@ -79,38 +85,77 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
      */
     private ImageButton mCaptureButton;
 
-    private View mBrightnessButton, mContrastButton;
+    private View mBrightnessButton, mContrastButton, mBtnSettings, mBtnSave;
+
+
     private View mResetButton;
     private View mToolsLayout, mValueLayout;
     private SeekBar mSettingSeekbar;
+
+    private Spinner mSpinnerFiberType;
+
+
+    String[] fiberType = {"SM", "MM", "MPO"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uvccamera);
 
-        mCameraButton = (ToggleButton) findViewById(R.id.camera_button);
-        mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
-        mCaptureButton = (ImageButton) findViewById(R.id.capture_button);
-        mCaptureButton.setOnClickListener(mOnClickListener);
-        mCaptureButton.setVisibility(View.INVISIBLE);
-        final View view = findViewById(R.id.camera_view);
-        view.setOnLongClickListener(mOnLongClickListener);
-        mUVCCameraView = (CameraViewInterface) view;
-        mUVCCameraView.setAspectRatio(PREVIEW_WIDTH / (float) PREVIEW_HEIGHT);
-
-        mBrightnessButton = findViewById(R.id.brightness_button);
-        mBrightnessButton.setOnClickListener(mOnClickListener);
-        mContrastButton = findViewById(R.id.contrast_button);
-        mContrastButton.setOnClickListener(mOnClickListener);
+        mCameraButton = findViewById(R.id.camera_button);
+        mCaptureButton = findViewById(R.id.capture_button);
+        mBrightnessButton = findViewById(R.id.btnBrightness);
+        mContrastButton = findViewById(R.id.btnContrast);
         mResetButton = findViewById(R.id.reset_button);
-        mResetButton.setOnClickListener(mOnClickListener);
-        mSettingSeekbar = (SeekBar) findViewById(R.id.setting_seekbar);
+        mToolsLayout = findViewById(R.id.tools_layout);
+        mValueLayout = findViewById(R.id.value_layout);
+        mSettingSeekbar = findViewById(R.id.setting_seekbar);
+        mUVCCameraView = findViewById(R.id.camera_view);
+        mBtnSettings = findViewById(R.id.btnSettings);
+        mBtnSave = findViewById(R.id.btnSaveImageAndReport);
+        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
+
+        mCaptureButton.setOnClickListener(this);
+        mBrightnessButton.setOnClickListener(this);
+        mContrastButton.setOnClickListener(this);
+        mResetButton.setOnClickListener(this);
+        mBtnSettings.setOnClickListener(this);
+        mBtnSave.setOnClickListener(this);
+
+        mSpinnerFiberType.setAdapter(new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, fiberType));
+
+        mSpinnerFiberType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "SM", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MM", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MPO", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
+        ((UVCCameraTextureView) mUVCCameraView).setOnLongClickListener(mOnLongClickListener);
         mSettingSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
 
-        mToolsLayout = findViewById(R.id.tools_layout);
-        mToolsLayout.setVisibility(View.INVISIBLE);
-        mValueLayout = findViewById(R.id.value_layout);
+        mUVCCameraView.setAspectRatio(PREVIEW_WIDTH / (float) PREVIEW_HEIGHT);
+
+        mCaptureButton.setVisibility(View.INVISIBLE);
+//        mToolsLayout.setVisibility(View.INVISIBLE);
         mValueLayout.setVisibility(View.INVISIBLE);
 
         mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
@@ -158,35 +203,39 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
     /**
      * event handler when click camera / capture button
      */
-    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View view) {
-            switch (view.getId()) {
-                case R.id.capture_button:
-                    if (mCameraHandler.isOpened()) {
-                        if (checkPermissionWriteExternalStorage() && checkPermissionAudio()) {
-                            if (!mCameraHandler.isRecording()) {
-                                mCaptureButton.setColorFilter(0xffff0000);    // turn red
-                                mCameraHandler.startRecording();
-                            } else {
-                                mCaptureButton.setColorFilter(0);    // return to default color
-                                mCameraHandler.stopRecording();
-                            }
+    @Override
+    public void onClick(final View view) {
+        switch (view.getId()) {
+            case R.id.capture_button:
+                if (mCameraHandler.isOpened()) {
+                    if (checkPermissionWriteExternalStorage() && checkPermissionAudio()) {
+                        if (!mCameraHandler.isRecording()) {
+                            mCaptureButton.setColorFilter(0xffff0000);    // turn red
+                            mCameraHandler.startRecording();
+                        } else {
+                            mCaptureButton.setColorFilter(0);    // return to default color
+                            mCameraHandler.stopRecording();
                         }
                     }
-                    break;
-                case R.id.brightness_button:
-                    showSettings(UVCCamera.PU_BRIGHTNESS);
-                    break;
-                case R.id.contrast_button:
-                    showSettings(UVCCamera.PU_CONTRAST);
-                    break;
-                case R.id.reset_button:
-                    resetSettings();
-                    break;
-            }
+                }
+                break;
+            case R.id.btnBrightness:
+                showSettings(UVCCamera.PU_BRIGHTNESS);
+                break;
+            case R.id.btnContrast:
+                showSettings(UVCCamera.PU_CONTRAST);
+                break;
+            case R.id.reset_button:
+                resetSettings();
+                break;
+            case R.id.btnSettings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.btnSaveImageAndReport:
+                startActivity(new Intent(this, SaveImageReportActivity.class));
+                break;
         }
-    };
+    }
 
     private final CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener
             = new CompoundButton.OnCheckedChangeListener() {
@@ -344,13 +393,13 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
         public void run() {
             if (isFinishing()) return;
             final int visible_active = isActive() ? View.VISIBLE : View.INVISIBLE;
-            mToolsLayout.setVisibility(visible_active);
-            mBrightnessButton.setVisibility(
-                    checkSupportFlag(UVCCamera.PU_BRIGHTNESS)
-                            ? visible_active : View.INVISIBLE);
-            mContrastButton.setVisibility(
-                    checkSupportFlag(UVCCamera.PU_CONTRAST)
-                            ? visible_active : View.INVISIBLE);
+//            mToolsLayout.setVisibility(visible_active);
+//            mBrightnessButton.setVisibility(
+//                    checkSupportFlag(UVCCamera.PU_BRIGHTNESS)
+//                            ? visible_active : View.INVISIBLE);
+//            mContrastButton.setVisibility(
+//                    checkSupportFlag(UVCCamera.PU_CONTRAST)
+//                            ? visible_active : View.INVISIBLE);
         }
     };
 

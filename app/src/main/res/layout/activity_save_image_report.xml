@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SaveImageReportActivity">
+
+    <LinearLayout
+        android:id="@+id/imageOptions"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reportOptions"
+        android:background="@color/AQUA"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image"
+            android:textSize="30dp"
+            android:layout_margin="@dimen/horizontal_margin"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Image File Format" />
+
+            <Spinner
+                android:id="@+id/spinnerImageFileFormat"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_prefix"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Filename Prefix:" />
+
+            <EditText
+                android:id="@+id/edit_prefix"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="CON" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sequential"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_sequential_number"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Sequential Number:" />
+
+            <EditText
+                android:id="@+id/edit_text_sequential_number"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="0002" />
+
+            <Button
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/reportOptions"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@id/imageOptions"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/TEAL_900_A090"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Report"
+            android:textSize="30dp"
+            android:layout_margin="@dimen/horizontal_margin"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Analysis Report Format:" />
+
+            <Spinner
+                android:id="@+id/spinnerStandard"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+
+            <Spinner
+                android:id="@+id/spinnerSimple"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Report Format" />
+
+            <Spinner
+                android:id="@+id/spinnerReportFormat"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File Path:"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="/sdcard/0"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

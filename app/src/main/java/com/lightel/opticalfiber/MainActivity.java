@@ -30,13 +30,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mDI5000.setOnClickListener(this);
 		mUndefined.setOnClickListener(this);
 		mSettings.setOnClickListener(this);
-		mDI2000.performClick();
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.di1000:
+				startActivity(new Intent(this, InspectorActivity.class));
+				break;
 			case R.id.di2000:
 				startActivity(new Intent(this, UVCCameraActivity.class));
 				break;

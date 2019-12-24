@@ -1,7 +1,6 @@
 package com.lightel.opticalfiber;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,7 +21,6 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.hardware.camera2.params.TonemapCurve;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
@@ -361,7 +359,7 @@ public class InspectorActivity extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.options:
-                startActivity(new Intent(this, Main2Activity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             default:
                 break;
