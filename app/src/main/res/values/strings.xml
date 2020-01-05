@@ -14,4 +14,45 @@
     <string name="menu_tools">Criteria</string>
     <string name="menu_share">Manual Adjust</string>
     <string name="menu_send">Zoom</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="array_fiber_type">
+        <item>SM</item>
+        <item>MM</item>
+        <item>MPO</item>
+    </string-array>
+
+    <string-array name="array_file_format">
+        <item>BMP</item>
+        <item>JPG</item>
+        <item>PNG</item>
+        <item>GIF</item>
+    </string-array>
+
+    <string-array name="array_analysis_report_format_standard">
+        <item>Standard</item>
+        <item>Extended</item>
+    </string-array>
+
+    <string-array name="array_analysis_report_format_simple">
+        <item>Simple</item>
+        <item>Detailed</item>
+    </string-array>
+
+    <string-array name="array_report_format">
+        <item>Text</item>
+        <item>Excel</item>
+    </string-array>
+
+    <string name="key_fiber_type" translatable="false">key_fiber_type</string>
+    <string name="key_image_file_format" translatable="false">key_image_file_format</string>
+    <string name="key_filename_prefix" translatable="false">key_filename_prefix</string>
+    <string name="key_sequential_number" translatable="false">key_sequential_number</string>
+    <string name="key_analysis_report_format_standard" translatable="false">key_analysis_report_format_standard</string>
+    <string name="key_analysis_report_format_simple" translatable="false">key_analysis_report_format_simple</string>
+    <string name="key_report_format" translatable="false">key_report_format</string>
+    <string name="key_file_path" translatable="false">key_file_path</string>
+
 </resources>

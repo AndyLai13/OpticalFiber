@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 
-public class SettingsActivity extends AppCompatActivity {
+public class OldSettingsActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 

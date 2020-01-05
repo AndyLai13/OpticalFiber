@@ -44,6 +44,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.lightel.opticalfiber.settings.SettingsActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

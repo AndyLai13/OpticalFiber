@@ -14,19 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Fullscreen">
-        <activity android:name=".SaveImageReportActivity"></activity>
+        <activity android:name=".settings.SettingsActivity"></activity>
+        <activity android:name=".SaveImageReportActivity" />
         <activity
             android:name=".UVCCameraActivity"
-            android:theme="@style/AppTheme.Fullscreen"></activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_main2"
-            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.Fullscreen" />
         <activity
-            android:name=".OptionsActivity"
+            android:name=".OldSettingsActivity"
             android:configChanges="orientation"
+            android:label="@string/title_activity_main2"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.Fullscreen" />
         <activity

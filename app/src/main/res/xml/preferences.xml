@@ -1,0 +1,70 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Fiber Type"
+        android:textSize="40dp">
+        <DropDownPreference
+            android:defaultValue="1"
+            android:entries="@array/array_fiber_type"
+            android:entryValues="@array/array_fiber_type"
+            android:key="@string/key_fiber_type"
+            android:summary="MM"
+            android:title="Fiber Type" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Image">
+        <DropDownPreference
+            android:defaultValue="1"
+            android:entries="@array/array_file_format"
+            android:entryValues="@array/array_file_format"
+            android:key="@string/key_image_file_format"
+            android:summary="1"
+            android:title="Image File Format" />
+        <EditTextPreference
+            android:dialogMessage="Dialog Message"
+            android:key="key_filename_prefix"
+            android:summary="EditText Summary"
+            android:title="Filename Prefix" />
+        <EditTextPreference
+            android:dialogMessage="Dialog Message"
+            android:key="key_sequential_number"
+            android:summary="EditText Summary"
+            android:title="Sequential Number" />
+
+        <!--        <CheckBoxPreference-->
+        <!--            android:defaultValue="true"-->
+        <!--            android:key="key3"-->
+        <!--            android:summary="CheckBox Summary"-->
+        <!--            android:title="CheckBox Preference" />-->
+        <!--        <SeekBarPreference-->
+        <!--            android:defaultValue="50"-->
+        <!--            android:title="SeekBar Preference" />-->
+        <!--        <DropDownPreference-->
+        <!--            android:defaultValue="true"-->
+        <!--            android:title="DropDown Preference" />-->
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Report">
+        <DropDownPreference
+            android:entries="@array/array_analysis_report_format_standard"
+            android:entryValues="@array/array_analysis_report_format_standard"
+            android:key="key_analysis_report_format_standard"
+            android:summary="Switch Summary"
+            android:title="Analysis Report Format(Standard/Extended)" />
+        <DropDownPreference
+            android:entries="@array/array_analysis_report_format_simple"
+            android:entryValues="@array/array_analysis_report_format_simple"
+            android:key="key_analysis_report_format_simple"
+            android:summary="Switch Summary"
+            android:title="Analysis Report Format(Simple/Detailed)" />
+        <DropDownPreference
+            android:entries="@array/array_report_format"
+            android:entryValues="@array/array_report_format"
+            android:key="key_report_format"
+            android:summary="CheckBox Summary"
+            android:title="Report Format" />
+        <EditTextPreference
+            android:defaultValue="50"
+            android:key="key_file_path"
+            android:summary="CheckBox Summary"
+            android:title="File Path" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -19,6 +19,7 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 
+import com.lightel.opticalfiber.settings.SettingsActivity;
 import com.serenegiant.common.BaseActivity;
 import com.serenegiant.usb.CameraDialog;
 import com.serenegiant.usb.USBMonitor;
@@ -112,40 +113,40 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
         mSettingSeekbar = findViewById(R.id.setting_seekbar);
         mUVCCameraView = findViewById(R.id.camera_view);
         mBtnSettings = findViewById(R.id.btnSettings);
-        mBtnSave = findViewById(R.id.btnSaveImageAndReport);
-        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
+//        mBtnSave = findViewById(R.id.btnSaveImageAndReport);
+//        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
 
         mCaptureButton.setOnClickListener(this);
         mBrightnessButton.setOnClickListener(this);
         mContrastButton.setOnClickListener(this);
         mResetButton.setOnClickListener(this);
         mBtnSettings.setOnClickListener(this);
-        mBtnSave.setOnClickListener(this);
+//        mBtnSave.setOnClickListener(this);
 
-        mSpinnerFiberType.setAdapter(new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_dropdown_item, fiberType));
-
-        mSpinnerFiberType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "SM", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MM", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 2:
-                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MPO", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        mSpinnerFiberType.setAdapter(new ArrayAdapter<>(
+//                this, android.R.layout.simple_spinner_dropdown_item, fiberType));
+//
+//        mSpinnerFiberType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                switch (position) {
+//                    case 0:
+//                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "SM", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case 1:
+//                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MM", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case 2:
+//                        Toast.makeText(UVCCameraActivity.this, "fiber type = " + "MPO", Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
 
         mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
@@ -231,9 +232,7 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
             case R.id.btnSettings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
-            case R.id.btnSaveImageAndReport:
-                startActivity(new Intent(this, SaveImageReportActivity.class));
-                break;
+//            case R.id.btnSavd
         }
     }
 

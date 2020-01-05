@@ -49,25 +49,26 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/camera_view"
         android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/vertical_margin"
+        android:layout_margin="@dimen/vertical_margin2"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Fiber Type"/>
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="20dp"-->
+<!--            android:text="Fiber Type"/>-->
 
-        <Spinner
-            android:id="@+id/spinnerFiberType"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+<!--        <Spinner-->
+<!--            android:id="@+id/spinnerFiberType"-->
+<!--            android:layout_marginTop="@dimen/vertical_margin"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"/>-->
 
         <Button
             android:id="@+id/btnBrightness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="40dp"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="brightness"/>
 
@@ -75,6 +76,7 @@
             android:id="@+id/btnContrast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="40dp"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="contrast"/>
 
@@ -82,32 +84,35 @@
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="40dp"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="settings"/>
 
-        <Button
-            android:id="@+id/btnSaveImageAndReport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:text="Save Image and Report"/>
+<!--        <Button-->
+<!--            android:id="@+id/btnSaveImageAndReport"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/vertical_margin"-->
+<!--            android:text="Save Image and Report"/>-->
+
+<!--        <CheckBox-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/vertical_margin"-->
+<!--            android:text="Wide View Scope" />-->
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:text="Wide View Scope" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/vertical_margin"
+            android:textSize="40dp"
             android:text="Zone Rings" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
+            android:textSize="40dp"
             android:text="Focus Bar" />
     </LinearLayout>
 
