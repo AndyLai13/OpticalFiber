@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				startActivity(new Intent(this, UVCCameraActivity.class));
 				break;
 			case R.id.di3000:
+				startActivity(new Intent(this, RTSPActivity.class));
+				break;
 			case R.id.di5000:
 			case R.id.undefined:
 			case R.id.settings:
