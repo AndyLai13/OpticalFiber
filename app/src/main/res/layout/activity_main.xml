@@ -11,50 +11,54 @@
 		android:layout_width="@dimen/button_width"
 		android:layout_height="@dimen/button_height"
 		android:text="DI1000"
+		android:textSize="25dp"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/di3000"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/di1000l" />
+
+	<Button
+		android:id="@+id/di1000l"
+		android:layout_width="@dimen/button_width"
+		android:layout_height="@dimen/button_height"
+		android:text="DI1000L"
+		android:textSize="25dp"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toTopOf="@id/di5000"
-		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintStart_toEndOf="@id/di1000"
 		app:layout_constraintEnd_toStartOf="@id/di2000" />
-
 
 	<Button
 		android:id="@+id/di2000"
 		android:layout_width="@dimen/button_width"
 		android:layout_height="@dimen/button_height"
 		android:text="DI2000"
+		android:textSize="25dp"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toTopOf="@id/undefined"
-		app:layout_constraintStart_toEndOf="@id/di1000"
-		app:layout_constraintEnd_toStartOf="@id/di3000" />
+		app:layout_constraintBottom_toTopOf="@id/settings"
+		app:layout_constraintStart_toEndOf="@id/di1000l"
+		app:layout_constraintEnd_toEndOf="parent"/>
 
 	<Button
 		android:id="@+id/di3000"
 		android:layout_width="@dimen/button_width"
 		android:layout_height="@dimen/button_height"
 		android:text="DI3000"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toTopOf="@id/settings"
-		app:layout_constraintStart_toEndOf="@id/di2000"
-		app:layout_constraintEnd_toEndOf="parent"/>
-
+		android:textSize="25dp"
+		app:layout_constraintTop_toBottomOf="@id/di1000"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/di5000"/>
+	
 	<Button
 		android:id="@+id/di5000"
 		android:layout_width="@dimen/button_width"
 		android:layout_height="@dimen/button_height"
 		android:text="DI5000"
-		app:layout_constraintTop_toBottomOf="@id/di1000"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/undefined"/>
-	
-	<Button
-		android:id="@+id/undefined"
-		android:layout_width="@dimen/button_width"
-		android:layout_height="@dimen/button_height"
-		android:text="UNDEFINED"
+		android:textSize="25dp"
 		app:layout_constraintTop_toBottomOf="@id/di2000"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toEndOf="@id/di5000"
+		app:layout_constraintStart_toEndOf="@id/di3000"
 		app:layout_constraintEnd_toStartOf="@id/settings"/>
 	
 	<Button
@@ -62,9 +66,10 @@
 		android:layout_width="@dimen/button_width"
 		android:layout_height="@dimen/button_height"
 		android:text="Settings"
-		app:layout_constraintTop_toBottomOf="@id/di3000"
+		android:textSize="25dp"
+		app:layout_constraintTop_toBottomOf="@id/di2000"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toEndOf="@id/undefined"
+		app:layout_constraintStart_toEndOf="@id/di5000"
 		app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -308,6 +308,14 @@ public class UVCCameraActivity extends BaseActivity implements CameraDialog.Came
         @Override
         public void onAttach(final UsbDevice device) {
             Toast.makeText(UVCCameraActivity.this, "USB_DEVICE_ATTACHED", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UVCCameraActivity.this, "device.getVendorId() = " + device.getVendorId() ,
+                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(UVCCameraActivity.this, "device.getVendorId() = " + device.getProductId() ,
+                    Toast.LENGTH_SHORT).show();
+            Log.v(TAG, "device.getVendorId() = " + Integer.toHexString(device.getVendorId()));
+            Log.v(TAG, "device.getProductId() = " + device.getProductId());
+
+
         }
 
         @Override

@@ -91,7 +91,7 @@ public class CameraDialog extends DialogFragment {
 	@Override
 	public void onAttach(final Activity activity) {
 		super.onAttach(activity);
-       if (mUSBMonitor == null)
+		if (mUSBMonitor == null)
         try {
     		mUSBMonitor = ((CameraDialogParent)activity).getUSBMonitor();
         } catch (final ClassCastException e) {
